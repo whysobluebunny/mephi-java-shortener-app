@@ -13,13 +13,20 @@ public class Link {
     private int clickLimit;
     private int clickCount;
     private UUID userId;
+    private int lifetimeHours; // Время жизни ссылки в часах
 
-    public Link(String originalUrl, int clickLimit, UUID userId) {
+    public Link(String originalUrl, int clickLimit, int lifetimeHours, UUID userId) {
         this.originalUrl = originalUrl;
         this.clickLimit = clickLimit;
+        this.lifetimeHours = lifetimeHours;
         this.userId = userId;
         this.creationTime = LocalDateTime.now();
-        this.expirationTime = creationTime.plusDays(1);
+        this.expirationTime = creationTime.plusHours(lifetimeHours); // Расчет времени истечения
         this.clickCount = 0;
+    }
+
+    // Метод для проверки, активна ли ссылка
+    public boolean isActive() {
+        return clickCount < clickLimit && expirationTime.isAfter(LocalDateTime.now());
     }
 }
